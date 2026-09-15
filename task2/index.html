@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Белая Чашка — Кофейня в Минске</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <div class="logo"> Белая Чашка</div>
+            <nav class="nav">
+                <a href="#hero">Главная</a>
+                <a href="#about">О нас</a>
+                <a href="#menu">Меню</a>
+                <a href="#contact">Контакты</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="hero" class="hero">
+        <div class="container hero-inner">
+            <div class="hero-text">
+                <h1>Кофейня «Белая Чашка»</h1>
+                <p>Уютное место в центре Минска, где каждая чашка кофе — это маленькое путешествие. Свежая обжарка, авторские десерты и атмосфера, в которую хочется возвращаться.</p>
+                <a href="#menu" class="btn">Посмотреть меню</a>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600" alt="Кофе">
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">О нас</h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon">🌱</div>
+                    <h3>Свежая обжарка</h3>
+                    <p>Обжариваем зёрна каждый день. Используем только specialty-кофе от проверенных поставщиков.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon"></div>
+                    <h3>Авторские десерты</h3>
+                    <p>Наши кондитеры создают десерты, которые идеально сочетаются с кофе.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">🏠</div>
+                    <h3>Уютная атмосфера</h3>
+                    <p>Мягкие кресла, быстрый Wi-Fi и дружелюбные бариста — всё для вашего комфорта.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="menu">
+        <div class="container">
+            <h2 class="section-title">Наше меню</h2>
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400" alt="Капучино">
+                    <div class="menu-card-body">
+                        <h3>Капучино</h3>
+                        <p>Классический итальянский кофе с нежной молочной пенкой</p>
+                        <span class="price">5.50 BYN</span>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400" alt="Латте">
+                    <div class="menu-card-body">
+                        <h3>Латте</h3>
+                        <p>Мягкий кофе с большим количеством вспененного молока</p>
+                        <span class="price">6.00 BYN</span>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefda?w=400" alt="Эспрессо">
+                    <div class="menu-card-body">
+                        <h3>Эспрессо</h3>
+                        <p>Крепкий и насыщенный — для настоящих ценителей кофе</p>
+                        <span class="price">3.50 BYN</span>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400" alt="Раф">
+                    <div class="menu-card-body">
+                        <h3>Раф</h3>
+                        <p>Авторский кофе со сливками и ванильным сахаром</p>
+                        <span class="price">6.50 BYN</span>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400" alt="Десерт">
+                    <div class="menu-card-body">
+                        <h3>Чизкейк</h3>
+                        <p>Нежный десерт из сливочного сыра с ягодным соусом</p>
+                        <span class="price">7.00 BYN</span>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400" alt="Круассан">
+                    <div class="menu-card-body">
+                        <h3>Круассан</h3>
+                        <p>Свежая французская выпечка с маслом и шоколадом</p>
+                        <span class="price">4.50 BYN</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Свяжитесь с нами</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Имя</label>
+                    <input type="text" id="name" name="name" placeholder="Ваше имя" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="example@mail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Сообщение</label>
+                    <textarea id="message" name="message" rows="5" placeholder="Ваше сообщение..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-submit">Отправить</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-info">
+                <div class="logo"> Белая Чашка</div>
+                <p>г. Минск, ул. Немига, 12</p>
+                <p>Пн–Вс: 8:00 – 22:00</p>
+            </div>
+            <div class="footer-contacts">
+                <a href="tel:+375291234567">+375 (29) 123-45-67</a>
+                <a href="mailto:info@belayachashka.by">info@belayachashka.by</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
