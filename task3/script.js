@@ -1,118 +1,104 @@
-let todos = [];
+let tasks = [];
 let currentFilter = 'all';
-let nextId = 1;
+let idCounter = 1;
 
-function init() {
-    const todoInput = document.getElementById('todoInput');
-    const addBtn = document.getElementById('addBtn');
-    const todoList = document.getElementById('todoList');
-    const remainingSpan = document.getElementById('remaining');
-    const completedSpan = document.getElementById('completed');
-    const filterBtns = document.querySelectorAll('.filter-btn');
+const input = document.getElementById('taskInput');
+const addBtn = document.getElementById('addBtn');
+const list = document.getElementById('taskList');
+const leftSpan = document.getElementById('leftCount');
+const doneSpan = document.getElementById('doneCount');
+const filterBtns = document.querySelectorAll('.filter-btn');
 
-    function addTodo() {
-        const text = todoInput.value.trim();
-        
-        if (text === '') {
-            alert('Введите текст задачи!');
-            return;
-        }
-        
-        const todo = {
-            id: nextId++,
-            text: text,
-            completed: false
-        };
-        
-        todos.push(todo);
-        todoInput.value = '';
-        render();
+function addTask() {
+    let text = input.value.trim();
+    if (text === '') {
+        input.style.borderColor = '#e74c3c';
+        setTimeout(() => input.style.borderColor = '#d0d5dd', 1500);
+        return;
     }
 
-    function deleteTodo(id) {
-        todos = todos.filter(todo => todo.id !== id);
-        render();
-    }
-
-    function toggleTodo(id) {
-        const todo = todos.find(todo => todo.id === id);
-        if (todo) {
-            todo.completed = !todo.completed;
-            render();
-        }
-    }
-
-    function updateCounter() {
-        const completed = todos.filter(todo => todo.completed).length;
-        const remaining = todos.length - completed;
-        
-        remainingSpan.textContent = remaining;
-        completedSpan.textContent = completed;
-    }
-
-    function render() {
-        todoList.innerHTML = '';
-        
-        const filteredTodos = todos.filter(todo => {
-            if (currentFilter === 'active') {
-                return !todo.completed;
-            } else if (currentFilter === 'completed') {
-                return todo.completed;
-            }
-            return true;
-        });
-        
-        filteredTodos.forEach(todo => {
-            const li = document.createElement('li');
-            li.className = 'todo-item';
-            if (todo.completed) {
-                li.classList.add('completed');
-            }
-            li.dataset.id = todo.id;
-            
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'todo-checkbox';
-            checkbox.checked = todo.completed;
-            checkbox.addEventListener('change', () => toggleTodo(todo.id));
-            
-            const span = document.createElement('span');
-            span.className = 'todo-text';
-            span.textContent = todo.text;
-            
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.textContent = 'Удалить';
-            deleteBtn.addEventListener('click', () => deleteTodo(todo.id));
-            
-            li.appendChild(checkbox);
-            li.appendChild(span);
-            li.appendChild(deleteBtn);
-            
-            todoList.appendChild(li);
-        });
-        
-        updateCounter();
-    }
-
-    addBtn.addEventListener('click', addTodo);
-
-    todoInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            addTodo();
-        }
-    });
-
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            render();
-        });
-    });
-
-    render();
+    let task = {
+        id: idCounter,
+        text: text,
+        completed: false
+    };
+    idCounter++;
+    tasks.push(task);
+    input.value = '';
+    draw();
 }
 
-document.addEventListener('DOMContentLoaded', init);
+function removeTask(id) {
+    tasks = tasks.filter(t => t.id !== id);
+    draw();
+}
+
+function toggleTask(id) {
+    let task = tasks.find(t => t.id === id);
+    if (task) {
+        task.completed = !task.completed;
+        draw();
+    }
+}
+
+function updateStats() {
+    let done = tasks.filter(t => t.completed).length;
+    let left = tasks.length - done;
+    leftSpan.textContent = left;
+    doneSpan.textContent = done;
+}
+
+function draw() {
+    list.innerHTML = '';
+
+    let visible = tasks.filter(t => {
+        if (currentFilter === 'active') return !t.completed;
+        if (currentFilter === 'completed') return t.completed;
+        return true;
+    });
+
+    visible.map(t => {
+        let li = document.createElement('li');
+        li.className = 'task';
+        if (t.completed) li.classList.add('done');
+
+        let check = document.createElement('input');
+        check.type = 'checkbox';
+        check.className = 'task-check';
+        check.checked = t.completed;
+        check.addEventListener('change', () => toggleTask(t.id));
+
+        let span = document.createElement('span');
+        span.className = 'task-text';
+        span.textContent = t.text;
+
+        let del = document.createElement('button');
+        del.className = 'task-delete';
+        del.textContent = 'Удалить';
+        del.addEventListener('click', () => removeTask(t.id));
+
+        li.appendChild(check);
+        li.appendChild(span);
+        li.appendChild(del);
+        list.appendChild(li);
+    });
+
+    updateStats();
+}
+
+addBtn.addEventListener('click', addTask);
+
+input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') addTask();
+});
+
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        draw();
+    });
+});
+
+draw();
