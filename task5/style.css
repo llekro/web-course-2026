@@ -28,7 +28,6 @@ h1 {
     color: #1a202c;
     margin-bottom: 24px;
     font-size: 2rem;
-    letter-spacing: -0.5px;
 }
 
 .level-display {
@@ -63,53 +62,52 @@ h1 {
 }
 
 .simon-board {
+    width: 320px;
+    height: 320px;
+    margin: 0 auto 32px;
+    background: #1a202c;
+    border-radius: 50%;
+    padding: 16px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 12px;
-    width: 280px;
-    height: 280px;
-    margin: 0 auto 32px;
-    background: #1a202c;
-    padding: 12px;
-    border-radius: 50%;
-    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .simon-btn {
-    border-radius: 12px;
+    border-radius: 16px;
     cursor: pointer;
     transition: all 0.15s ease;
-    opacity: 0.6;
-    border: 4px solid rgba(0, 0, 0, 0.2);
+    opacity: 0.7;
+    border: 3px solid rgba(255, 255, 255, 0.1);
 }
 
 .simon-btn:hover {
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
 .simon-btn.active {
     opacity: 1;
     transform: scale(0.95);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
-    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
-.simon-btn.green { background: #48bb78; }
-.simon-btn.red { background: #f56565; }
-.simon-btn.yellow { background: #ecc94b; }
-.simon-btn.blue { background: #4299e1; }
-
-.simon-board.shake {
-    animation: shakeBoard 0.5s ease-in-out;
+.simon-btn.green { 
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
 }
 
-@keyframes shakeBoard {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-8px); }
-    40% { transform: translateX(8px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
+.simon-btn.red { 
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+}
+
+.simon-btn.yellow { 
+    background: linear-gradient(135deg, #ecc94b 0%, #d69e2e 100%);
+}
+
+.simon-btn.blue { 
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
 }
 
 .btn {
@@ -140,8 +138,6 @@ h1 {
     background: #cbd5e0;
     color: #718096;
     cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
 }
 
 .message {
