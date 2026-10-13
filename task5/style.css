@@ -61,69 +61,50 @@ h1 {
 }
 
 .simon-board {
-    position: relative;
     width: 320px;
-    height: 320px;
     margin: 0 auto 32px;
     background: #16202b;
-    border-radius: 50%;
-    padding: 12px;
+    border-radius: 28px;
+    padding: 14px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 12px;
-    overflow: hidden;
+    gap: 14px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
-.simon-board::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 96px;
-    height: 96px;
-    transform: translate(-50%, -50%);
-    background: #16202b;
-    border-radius: 50%;
-    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
-    pointer-events: none;
-}
-
 .simon-btn {
+    aspect-ratio: 1 / 1;
+    border-radius: 18px;
     cursor: pointer;
-    opacity: 0.75;
+    opacity: 0.8;
     transition: filter 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
 }
 
 .simon-btn:hover {
-    opacity: 0.9;
+    opacity: 0.95;
 }
 
 .simon-btn.active {
     opacity: 1;
-    filter: brightness(1.55);
-    transform: scale(0.97);
+    filter: brightness(1.6);
+    transform: scale(0.96);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
 }
 
 .simon-btn.green {
     background: #48bb78;
-    border-radius: 100% 0 0 0;
 }
 
 .simon-btn.red {
     background: #f56565;
-    border-radius: 0 100% 0 0;
 }
 
 .simon-btn.yellow {
     background: #ecc94b;
-    border-radius: 0 0 0 100%;
 }
 
 .simon-btn.blue {
     background: #4299e1;
-    border-radius: 0 0 100% 0;
 }
 
 .btn {
