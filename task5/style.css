@@ -91,6 +91,11 @@ h1 {
     box-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
 }
 
+.simon-board.showing .simon-btn {
+    pointer-events: none;
+    cursor: default;
+}
+
 .simon-btn.green {
     background: #48bb78;
 }
