@@ -76,6 +76,7 @@ function handlePlayerClick(index) {
     }
 }
 
+
 function startGame() {
     sequence = [];
     playerSequence = [];
