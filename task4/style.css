@@ -41,12 +41,14 @@ body {
 
 .input-section {
     display: flex;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 16px;
 }
 
 #guessInput {
-    flex: 1;
+    flex: 1 1 200px;
+    min-width: 0;
     padding: 12px 16px;
     border: 2px solid #e2e8f0;
     border-radius: 8px;
@@ -63,15 +65,9 @@ body {
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
 }
 
-#guessInput.shake {
-    border-color: #f56565;
-    animation: shake 0.4s ease-in-out;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
+#guessInput:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
 }
 
 .btn {
@@ -84,17 +80,17 @@ body {
     transition: all 0.2s;
 }
 
-.primary-btn {
+.check-btn {
+    flex: 1 1 130px;
     background: #4299e1;
     color: white;
 }
 
-.primary-btn:hover:not(:disabled) {
+.check-btn:hover:not(:disabled) {
     background: #3182ce;
-    transform: translateY(-1px);
 }
 
-.primary-btn:disabled {
+.check-btn:disabled {
     background: #cbd5e0;
     cursor: not-allowed;
 }
@@ -108,7 +104,6 @@ body {
 
 .secondary-btn:hover {
     background: #38a169;
-    transform: translateY(-1px);
 }
 
 .message {
@@ -179,16 +174,15 @@ body {
     display: flex;
     justify-content: space-between;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    animation: slideIn 0.3s ease-out;
 }
 
 .history-item:last-child {
     margin-bottom: 0;
 }
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+.history-number {
+    font-weight: 700;
+    letter-spacing: 3px;
 }
 
 .history-list::-webkit-scrollbar {
