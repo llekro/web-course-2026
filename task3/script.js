@@ -29,6 +29,16 @@ function addTask() {
 }
 
 function removeTask(id) {
+    let task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    if (task.completed) {
+        return;
+    }
+
+    let answer = confirm('Удалить задачу "' + task.text + '"?');
+    if (!answer) return;
+
     tasks = tasks.filter(t => t.id !== id);
     draw();
 }
@@ -75,6 +85,12 @@ function draw() {
         let del = document.createElement('button');
         del.className = 'task-delete';
         del.textContent = 'Удалить';
+        
+        if (t.completed) {
+            del.disabled = true;
+            del.title = 'Сначала снимите отметку "Выполнено"';
+        }
+        
         del.addEventListener('click', () => removeTask(t.id));
 
         li.appendChild(check);
