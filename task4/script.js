@@ -98,6 +98,14 @@ function renderHistory() {
 
         row.appendChild(num);
         row.appendChild(result);
+
+        row.addEventListener('click', function () {
+            if (!gameOver) {
+                inputEl.value = item.guess;
+                inputEl.focus();
+            }
+        });
+
         historyEl.appendChild(row);
     }
 }
