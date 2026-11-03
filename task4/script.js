@@ -1,7 +1,7 @@
 let secretNumber = '';
 let attempts = 0;
 let history = [];
-let isGameOver = false;
+let gameOver = false;
 
 const inputEl = document.getElementById('guessInput');
 const checkBtn = document.getElementById('checkBtn');
@@ -11,88 +11,131 @@ const historyEl = document.getElementById('history');
 const messageEl = document.getElementById('message');
 
 function generateNumber() {
-    const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    let result = '';
-    for (let i = 0; i < 4; i++) {
-        const idx = Math.floor(Math.random() * digits.length);
-        result += digits[idx];
-        digits.splice(idx, 1);
+    let number = '';
+    while (number.length < 4) {
+        let digit = String(Math.floor(Math.random() * 10));
+        if (number.indexOf(digit) === -1) {
+            number = number + digit;
+        }
     }
-    return result;
+    return number;
 }
 
 function validateInput(value) {
-    if (!/^\d{4}$/.test(value)) {
-        return { valid: false, msg: 'Введите ровно 4 цифры' };
+    if (value.length !== 4) {
+        return 'Введите ровно 4 цифры';
     }
-    if (new Set(value).size !== 4) {
-        return { valid: false, msg: 'Все цифры должны быть разными' };
+    for (let i = 0; i < 4; i++) {
+        if (value[i] < '0' || value[i] > '9') {
+            return 'Можно вводить только цифры от 0 до 9';
+        }
     }
-    return { valid: true, msg: '' };
+    return '';
 }
 
-function countBullsAndCows(secret, guess) {
+function hasSameDigits(value) {
+    for (let i = 0; i < 4; i++) {
+        for (let j = i + 1; j < 4; j++) {
+            if (value[i] === value[j]) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function countBullsAndCows(guess) {
     let bulls = 0;
     let cows = 0;
     for (let i = 0; i < 4; i++) {
-        if (guess[i] === secret[i]) {
-            bulls++;
-        } else if (secret.includes(guess[i])) {
-            cows++;
+        if (guess[i] === secretNumber[i]) {
+            bulls = bulls + 1;
+        } else if (secretNumber.indexOf(guess[i]) !== -1) {
+            cows = cows + 1;
         }
     }
-    return { bulls, cows };
+    return { bulls: bulls, cows: cows };
 }
 
-function getBullWord(n) {
+function bullsWord(n) {
     if (n === 1) return 'бык';
     if (n >= 2 && n <= 4) return 'быка';
     return 'быков';
 }
 
-function getCowWord(n) {
+function cowsWord(n) {
     if (n === 1) return 'корова';
     if (n >= 2 && n <= 4) return 'коровы';
     return 'коров';
 }
 
+function attemptsWord(n) {
+    if (n === 1) return 'попытку';
+    if (n >= 2 && n <= 4) return 'попытки';
+    return 'попыток';
+}
+
+function showMessage(text, type) {
+    messageEl.textContent = text;
+    messageEl.className = 'message ' + type;
+}
+
 function renderHistory() {
     historyEl.innerHTML = '';
-    history.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'history-item';
-        div.innerHTML = `<span>${item.guess}</span><span>${item.bulls} ${getBullWord(item.bulls)}, ${item.cows} ${getCowWord(item.cows)}</span>`;
-        historyEl.appendChild(div);
-    });
+    for (let i = 0; i < history.length; i++) {
+        let item = history[i];
+
+        let row = document.createElement('div');
+        row.className = 'history-item';
+
+        let num = document.createElement('span');
+        num.className = 'history-number';
+        num.textContent = item.guess;
+
+        let result = document.createElement('span');
+        result.textContent = item.bulls + ' ' + bullsWord(item.bulls) + ', ' +
+            item.cows + ' ' + cowsWord(item.cows);
+
+        row.appendChild(num);
+        row.appendChild(result);
+        historyEl.appendChild(row);
+    }
 }
 
 function checkGuess() {
-    if (isGameOver) return;
-    
-    const val = inputEl.value.trim();
-    const validation = validateInput(val);
-    
-    if (!validation.valid) {
-        messageEl.textContent = validation.msg;
-        messageEl.className = 'message error';
-        inputEl.classList.add('shake');
-        setTimeout(() => inputEl.classList.remove('shake'), 400);
+    if (gameOver) return;
+
+    let guess = inputEl.value.trim();
+    let error = validateInput(guess);
+    let sameDigits = hasSameDigits(guess);
+
+    if (error === '' && sameDigits) {
+        error = 'Все цифры должны быть разными';
+    }
+
+    if (error !== '') {
+        showMessage(error, 'error');
+        if (sameDigits) {
+            inputEl.value = '';
+        }
+        inputEl.focus();
         return;
     }
 
-    messageEl.textContent = '';
-    attempts++;
+    showMessage('', '');
+    attempts = attempts + 1;
     attemptsEl.textContent = attempts;
-    
-    const result = countBullsAndCows(secretNumber, val);
-    history.push({ guess: val, bulls: result.bulls, cows: result.cows });
+
+    let result = countBullsAndCows(guess);
+    history.push({ guess: guess, bulls: result.bulls, cows: result.cows });
     renderHistory();
+
     inputEl.value = '';
+    inputEl.focus();
 
     if (result.bulls === 4) {
-        isGameOver = true;
-        messageEl.textContent = `Победа! Угадано за ${attempts} попыток`;
-        messageEl.className = 'message success';
+        gameOver = true;
+        showMessage('Победа! Угадано за ' + attempts + ' ' + attemptsWord(attempts), 'success');
         inputEl.disabled = true;
         checkBtn.disabled = true;
     }
@@ -102,22 +145,23 @@ function newGame() {
     secretNumber = generateNumber();
     attempts = 0;
     history = [];
-    isGameOver = false;
+    gameOver = false;
+
     attemptsEl.textContent = '0';
     historyEl.innerHTML = '';
-    messageEl.textContent = '';
-    messageEl.className = 'message';
+    showMessage('', '');
     inputEl.value = '';
     inputEl.disabled = false;
     checkBtn.disabled = false;
     inputEl.focus();
-    console.log('Secret:', secretNumber);
 }
 
 checkBtn.addEventListener('click', checkGuess);
 
-inputEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') checkGuess();
+inputEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        checkGuess();
+    }
 });
 
 newGameBtn.addEventListener('click', newGame);
