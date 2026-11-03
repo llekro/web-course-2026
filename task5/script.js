@@ -22,6 +22,7 @@ function activateButton(index) {
 
 async function playSequence() {
     isShowingSequence = true;
+    boardEl.classList.add('showing');
     playerSequence = [];
     messageEl.textContent = 'Запоминайте...';
     messageEl.className = 'message';
@@ -29,13 +30,17 @@ async function playSequence() {
     await sleep(800);
     
     for (let i = 0; i < sequence.length; i++) {
+        if (isGameOver) break;
         activateButton(sequence[i]);
         await sleep(600);
     }
     
-    isShowingSequence = false;
-    messageEl.textContent = 'Ваш ход!';
-    messageEl.className = 'message success';
+    if (!isGameOver) {
+        isShowingSequence = false;
+        boardEl.classList.remove('showing');
+        messageEl.textContent = 'Ваш ход!';
+        messageEl.className = 'message success';
+    }
 }
 
 function handlePlayerClick(index) {
@@ -48,11 +53,13 @@ function handlePlayerClick(index) {
 
     if (playerSequence[currentIndex] !== sequence[currentIndex]) {
         isGameOver = true;
-        messageEl.textContent = `Вы дошли до уровня ${level}`;
+        messageEl.textContent = 'Вы дошли до уровня ' + level;
         messageEl.className = 'message error';
         boardEl.classList.add('shake');
         setTimeout(() => boardEl.classList.remove('shake'), 500);
         startBtn.disabled = false;
+        isShowingSequence = false;
+        boardEl.classList.remove('showing');
         return;
     }
 
@@ -79,6 +86,7 @@ function startGame() {
     messageEl.textContent = '';
     messageEl.className = 'message';
     startBtn.disabled = true;
+    boardEl.classList.remove('showing');
     
     sequence.push(Math.floor(Math.random() * 4));
     playSequence();
