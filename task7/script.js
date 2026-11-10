@@ -1,3 +1,4 @@
+
 (function () {
     const BATCH_SIZE = 10;
     const SCROLL_THRESHOLD = 200;
