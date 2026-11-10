@@ -11,7 +11,6 @@ body {
     min-height: 100vh;
 }
 
-
 .header {
     position: sticky;
     top: 0;
@@ -133,13 +132,14 @@ h1 {
 }
 
 .retry-btn {
-    margin-left: 10px;
-    padding: 6px 14px;
+    margin-top: 10px;
+    padding: 8px 18px;
     border: none;
     border-radius: 6px;
     background: #c0392b;
     color: #fff;
     cursor: pointer;
+    font-size: 14px;
 }
 
 .retry-btn:hover {
@@ -151,6 +151,7 @@ h1 {
     text-align: center;
     color: #7f8c8d;
     padding: 20px;
+    font-style: italic;
 }
 
 .status-message.visible {
