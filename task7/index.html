@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Лента постов</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <h1>Лента постов</h1>
+            <input type="search" id="searchInput" class="search-input" placeholder="Поиск по заголовку..." autocomplete="off">
+        </div>
+    </header>
 
+    <main class="page">
+        <div id="postList" class="post-list"></div>
+
+        <div id="loader" class="loader">
+            <span class="spinner"></span>
+            <span>Загрузка...</span>
+        </div>
+
+        <p id="errorMessage" class="error">
+            Не удалось загрузить посты. Проверьте интернет.
+            <button id="retryBtn" class="retry-btn" type="button">Повторить</button>
+        </p>
+
+        <p id="endMessage" class="status-message">Больше постов нет</p>
+        <p id="emptyMessage" class="status-message">Ничего не найдено по вашему запросу</p>
+    </main>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
