@@ -3,11 +3,46 @@ let playerSequence = [];
 let level = 0;
 let isShowingSequence = false;
 let isGameOver = false;
+let audioCtx = null;
+
+const FREQUENCIES = [329.63, 261.63, 220.00, 164.81];
+const TONE_DURATION = 0.3;
 
 const buttons = document.querySelectorAll('.simon-btn');
 const startBtn = document.getElementById('startBtn');
 const levelEl = document.getElementById('level');
 const messageEl = document.getElementById('message');
+
+function ensureAudioContext() {
+    if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+function playTone(index) {
+    ensureAudioContext();
+    const now = audioCtx.currentTime;
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.value = FREQUENCIES[index];
+
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.3, now + 0.02);
+    gain.gain.linearRampToValueAtTime(0, now + TONE_DURATION);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(now);
+    osc.stop(now + TONE_DURATION + 0.05);
+}
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -22,6 +57,7 @@ function setButtonsEnabled(enabled) {
 function activateButton(index) {
     const btn = buttons[index];
     btn.classList.add('active');
+    playTone(index);
     setTimeout(function () {
         btn.classList.remove('active');
     }, 400);
@@ -83,6 +119,7 @@ function handlePlayerClick(index) {
 }
 
 function startGame() {
+    ensureAudioContext();
     sequence = [];
     playerSequence = [];
     level = 0;
