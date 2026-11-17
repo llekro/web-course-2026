@@ -8,43 +8,51 @@ const buttons = document.querySelectorAll('.simon-btn');
 const startBtn = document.getElementById('startBtn');
 const levelEl = document.getElementById('level');
 const messageEl = document.getElementById('message');
-const boardEl = document.getElementById('simonBoard');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function setButtonsEnabled(enabled) {
+    buttons.forEach(function (btn) {
+        btn.disabled = !enabled;
+    });
+}
+
 function activateButton(index) {
     const btn = buttons[index];
     btn.classList.add('active');
-    setTimeout(() => btn.classList.remove('active'), 400);
+    setTimeout(function () {
+        btn.classList.remove('active');
+    }, 400);
 }
 
 async function playSequence() {
     isShowingSequence = true;
-    boardEl.classList.add('showing');
+    setButtonsEnabled(false);
     playerSequence = [];
     messageEl.textContent = 'Запоминайте...';
     messageEl.className = 'message';
-    
+
     await sleep(800);
-    
+
     for (let i = 0; i < sequence.length; i++) {
         if (isGameOver) break;
         activateButton(sequence[i]);
         await sleep(600);
     }
-    
+
     if (!isGameOver) {
         isShowingSequence = false;
-        boardEl.classList.remove('showing');
+        setButtonsEnabled(true);
         messageEl.textContent = 'Ваш ход!';
         messageEl.className = 'message success';
     }
 }
 
 function handlePlayerClick(index) {
-    if (isGameOver || isShowingSequence) return;
+    if (isGameOver) return;
+    if (isShowingSequence) return;
 
     activateButton(index);
     playerSequence.push(index);
@@ -53,13 +61,11 @@ function handlePlayerClick(index) {
 
     if (playerSequence[currentIndex] !== sequence[currentIndex]) {
         isGameOver = true;
+        isShowingSequence = false;
+        setButtonsEnabled(false);
         messageEl.textContent = 'Вы дошли до уровня ' + level;
         messageEl.className = 'message error';
-        boardEl.classList.add('shake');
-        setTimeout(() => boardEl.classList.remove('shake'), 500);
         startBtn.disabled = false;
-        isShowingSequence = false;
-        boardEl.classList.remove('showing');
         return;
     }
 
@@ -67,15 +73,14 @@ function handlePlayerClick(index) {
         level++;
         levelEl.textContent = level;
         messageEl.textContent = 'Верно!';
-        
-        setTimeout(() => {
+
+        setTimeout(function () {
             messageEl.textContent = '';
             sequence.push(Math.floor(Math.random() * 4));
             playSequence();
         }, 1000);
     }
 }
-
 
 function startGame() {
     sequence = [];
@@ -87,14 +92,18 @@ function startGame() {
     messageEl.textContent = '';
     messageEl.className = 'message';
     startBtn.disabled = true;
-    boardEl.classList.remove('showing');
-    
+    setButtonsEnabled(false);
+
     sequence.push(Math.floor(Math.random() * 4));
     playSequence();
 }
 
-buttons.forEach((btn, index) => {
-    btn.addEventListener('click', () => handlePlayerClick(index));
+buttons.forEach(function (btn, index) {
+    btn.addEventListener('click', function () {
+        handlePlayerClick(index);
+    });
 });
 
 startBtn.addEventListener('click', startGame);
+
+setButtonsEnabled(false);
