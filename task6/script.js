@@ -41,7 +41,8 @@ class SnakeModel {
         this.nextDirection = dir;
     }
 
-    reverseDirection() {
+    bounce() {
+        this.snake.reverse();
         this.direction = { x: -this.direction.x, y: -this.direction.y };
         this.nextDirection = { x: this.direction.x, y: this.direction.y };
     }
@@ -64,12 +65,12 @@ class SnakeModel {
         if (hitWall) {
             if (this.lives > 0) {
                 this.lives -= 1;
-                this.reverseDirection();
-                return;
-            } else {
-                this.gameOver = true;
+                this.bounce();
+                console.log('Отскок от стены, осталось жизней:', this.lives);
                 return;
             }
+            this.gameOver = true;
+            return;
         }
 
         if (this.checkSelfCollision(head)) {
@@ -141,79 +142,4 @@ class SnakeView {
     draw(model) {
         const ctx = this.ctx;
         ctx.fillStyle = '#101828';
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawGrid(model.gridSize);
-        this.drawApple(model.apple);
-        this.drawSnake(model.snake);
-        this.scoreEl.textContent = model.score;
-        this.livesEl.textContent = model.lives;
-    }
-
-    showGameOver(score) {
-        if (this.overlayEl.classList.contains('visible')) return;
-        this.finalScoreEl.textContent = score;
-        this.overlayEl.classList.add('visible');
-    }
-
-    hideGameOver() {
-        this.overlayEl.classList.remove('visible');
-    }
-}
-
-class GameController {
-    constructor(model, view, moveInterval) {
-        this.model = model;
-        this.view = view;
-        this.moveInterval = moveInterval;
-        this.lastMoveTime = 0;
-        this.loopStarted = false;
-        this.directions = {
-            ArrowUp: { x: 0, y: -1 },
-            ArrowDown: { x: 0, y: 1 },
-            ArrowLeft: { x: -1, y: 0 },
-            ArrowRight: { x: 1, y: 0 }
-        };
-
-        document.getElementById('restartBtn').addEventListener('click', () => this.start());
-        document.addEventListener('keydown', (event) => this.handleKey(event));
-    }
-
-    start() {
-        this.model.reset();
-        this.view.hideGameOver();
-        this.lastMoveTime = performance.now();
-        if (!this.loopStarted) {
-            this.loopStarted = true;
-            requestAnimationFrame((timestamp) => this.loop(timestamp));
-        }
-    }
-
-    loop(timestamp) {
-        if (!this.model.gameOver) {
-            if (timestamp - this.lastMoveTime >= this.moveInterval) {
-                this.lastMoveTime = timestamp;
-                this.model.update();
-            }
-        } else {
-            this.view.showGameOver(this.model.score);
-        }
-        this.view.draw(this.model);
-        requestAnimationFrame((next) => this.loop(next));
-    }
-
-    handleKey(event) {
-        const dir = this.directions[event.key];
-        if (!dir || this.model.gameOver) return;
-        event.preventDefault();
-        this.model.setDirection(dir);
-    }
-}
-
-const GRID_SIZE = 20;
-const CELL_SIZE = 20;
-const MOVE_INTERVAL = 150;
-
-const model = new SnakeModel(GRID_SIZE);
-const view = new SnakeView(CELL_SIZE);
-const controller = new GameController(model, view, MOVE_INTERVAL);
-controller.start();
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height
