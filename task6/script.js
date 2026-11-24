@@ -14,6 +14,7 @@ class SnakeModel {
         this.direction = { x: 1, y: 0 };
         this.nextDirection = { x: 1, y: 0 };
         this.score = 0;
+        this.lives = 3;
         this.gameOver = false;
         this.spawnApple();
     }
@@ -40,12 +41,13 @@ class SnakeModel {
         this.nextDirection = dir;
     }
 
-    checkCollision(head, grows) {
-        if (head.x < 0 || head.y < 0 || head.x >= this.gridSize || head.y >= this.gridSize) {
-            return true;
-        }
-        const body = grows ? this.snake : this.snake.slice(0, -1);
-        return body.some(seg => seg.x === head.x && seg.y === head.y);
+    reverseDirection() {
+        this.direction = { x: -this.direction.x, y: -this.direction.y };
+        this.nextDirection = { x: this.direction.x, y: this.direction.y };
+    }
+
+    checkSelfCollision(head) {
+        return this.snake.some(seg => seg.x === head.x && seg.y === head.y);
     }
 
     update() {
@@ -56,12 +58,26 @@ class SnakeModel {
             x: this.snake[0].x + this.direction.x,
             y: this.snake[0].y + this.direction.y
         };
-        const eatsApple = head.x === this.apple.x && head.y === this.apple.y;
 
-        if (this.checkCollision(head, eatsApple)) {
+        const hitWall = head.x < 0 || head.y < 0 || head.x >= this.gridSize || head.y >= this.gridSize;
+
+        if (hitWall) {
+            if (this.lives > 0) {
+                this.lives -= 1;
+                this.reverseDirection();
+                return;
+            } else {
+                this.gameOver = true;
+                return;
+            }
+        }
+
+        if (this.checkSelfCollision(head)) {
             this.gameOver = true;
             return;
         }
+
+        const eatsApple = head.x === this.apple.x && head.y === this.apple.y;
 
         this.snake.unshift(head);
         if (eatsApple) {
@@ -79,6 +95,7 @@ class SnakeView {
         this.canvas = document.getElementById('game');
         this.ctx = this.canvas.getContext('2d');
         this.scoreEl = document.getElementById('score');
+        this.livesEl = document.getElementById('lives');
         this.overlayEl = document.getElementById('overlay');
         this.finalScoreEl = document.getElementById('finalScore');
     }
@@ -129,6 +146,7 @@ class SnakeView {
         this.drawApple(model.apple);
         this.drawSnake(model.snake);
         this.scoreEl.textContent = model.score;
+        this.livesEl.textContent = model.lives;
     }
 
     showGameOver(score) {
