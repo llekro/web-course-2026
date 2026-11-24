@@ -9,7 +9,10 @@
 <body>
     <main class="page">
         <h1>Змейка</h1>
-        <p class="score">Счёт: <span id="score">0</span></p>
+        <div class="stats-bar">
+            <p class="score">Счёт: <span id="score">0</span></p>
+            <p class="lives">Жизни: <span id="lives">3</span></p>
+        </div>
         <div class="board">
             <canvas id="game" width="400" height="400"></canvas>
             <div id="overlay" class="overlay">
@@ -18,7 +21,7 @@
                 <button id="restartBtn" class="restart-btn" type="button">Начать заново</button>
             </div>
         </div>
-        <p class="hint">Управление — стрелки на клавиатуре</p>
+        <p class="hint">Управление — стрелки. 3 отскока от стены, на 4-й — конец игры.</p>
     </main>
     <script type="module" src="script.js"></script>
 </body>
