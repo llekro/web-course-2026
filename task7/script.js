@@ -1,19 +1,21 @@
-
 (function () {
     const BATCH_SIZE = 10;
     const SCROLL_THRESHOLD = 200;
     const DEBOUNCE_DELAY = 300;
+    const SHORT_QUERY_DELAY = 2000;
+    const SHORT_QUERY_LENGTH = 5;
     const API_URL = 'https://jsonplaceholder.typicode.com/posts';
 
     const model = {
         posts: [],
         searchQuery: '',
         isLoading: false,
-        allLoaded: false
+        allLoaded: false,
+        currentPage: 0
     };
 
     function getVisiblePosts() {
-        const query = model.searchQuery.toLowerCase();
+        const query = model.searchQuery.toLowerCase().trim();
         if (query === '') return model.posts;
         return model.posts.filter(function (post) {
             return post.title.toLowerCase().includes(query);
@@ -21,12 +23,17 @@
     }
 
     async function fetchNextBatch() {
-        const url = API_URL + '?_start=' + model.posts.length + '&_limit=' + BATCH_SIZE;
+        const nextPage = model.currentPage + 1;
+        const url = API_URL + '?_page=' + nextPage + '&_limit=' + BATCH_SIZE;
+
         const response = await fetch(url);
+
         if (!response.ok) {
             throw new Error('Сервер вернул статус ' + response.status);
         }
-        return response.json();
+
+        const data = await response.json();
+        return { data: data, page: nextPage };
     }
 
     const view = (function () {
@@ -66,7 +73,11 @@
         }
 
         function setVisibility(el, on) {
-            el.classList.toggle('visible', on);
+            if (on) {
+                el.classList.add('visible');
+            } else {
+                el.classList.remove('visible');
+            }
         }
 
         return {
@@ -85,6 +96,7 @@
     const retryBtn = document.getElementById('retryBtn');
 
     function needMore() {
+        if (model.isLoading || model.allLoaded) return false;
         const remaining = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
         return remaining <= SCROLL_THRESHOLD;
     }
@@ -102,18 +114,18 @@
         view.hideError();
         view.showLoader();
 
-        let loadedOk = false;
         try {
-            const batch = await fetchNextBatch();
-            if (batch.length === 0) {
+            const result = await fetchNextBatch();
+
+            if (result.data.length === 0) {
                 model.allLoaded = true;
                 view.showEnd();
             } else {
-                batch.forEach(function (post) {
+                result.data.forEach(function (post) {
                     model.posts.push(post);
                 });
+                model.currentPage = result.page;
                 refreshList();
-                loadedOk = true;
             }
         } catch (error) {
             view.showError();
@@ -122,9 +134,18 @@
             view.hideLoader();
         }
 
-        if (loadedOk && needMore()) {
-            loadMore();
+        setTimeout(function () {
+            if (needMore()) {
+                loadMore();
+            }
+        }, 100);
+    }
+
+    function getDebounceDelay() {
+        if (searchInput.value.length <= SHORT_QUERY_LENGTH) {
+            return SHORT_QUERY_DELAY;
         }
+        return DEBOUNCE_DELAY;
     }
 
     function handleScroll() {
@@ -136,15 +157,17 @@
     function handleSearch() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(function () {
-            model.searchQuery = searchInput.value.trim();
+            model.searchQuery = searchInput.value;
             refreshList();
-        }, DEBOUNCE_DELAY);
+        }, getDebounceDelay());
     }
 
     window.addEventListener('scroll', handleScroll);
     searchInput.addEventListener('input', handleSearch);
-    retryBtn.addEventListener('click', loadMore);
+    retryBtn.addEventListener('click', function () {
+        view.hideError();
+        loadMore();
+    });
 
     loadMore();
 })();
-
